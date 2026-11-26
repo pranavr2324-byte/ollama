@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholaris — Study Planner Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar / Brand Header -->
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <div class="brand-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+                    </div>
+                    <h1>Scholaris</h1>
+                </div>
+                <p class="brand-subtitle">Master your study goals with focus and elegance.</p>
+
+                <!-- Sidebar Stats Widget -->
+                <div class="sidebar-stats">
+                    <div class="sidebar-stat-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        Focus Overview
+                    </div>
+                    <div class="sidebar-stat-row">
+                        <span class="stat-row-label">Completion Rate</span>
+                        <span id="sidebar-rate" class="sidebar-stat-val">0%</span>
+                    </div>
+                    <div class="sidebar-stat-row">
+                        <span class="stat-row-label">Active Subjects</span>
+                        <span id="sidebar-subjects" class="sidebar-stat-val">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quote-card">
+                <p class="quote-text">"An investment in knowledge pays the best interest."</p>
+                <span class="quote-author">— Benjamin Franklin</span>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Content -->
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="header-title-group">
+                    <h2>Study Dashboard</h2>
+                    <p id="current-date">Loading date...</p>
+                </div>
+                <div class="header-actions">
+                    <button id="theme-toggle-btn" class="btn btn-secondary" title="Toggle Light/Dark Theme">
+                        <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                        <span id="theme-text">Light Mode</span>
+                    </button>
+                    <button id="clear-completed-btn" class="btn btn-secondary">Clear Completed</button>
+                    <button id="clear-all-btn" class="btn btn-danger-subtle">Reset All</button>
+                </div>
+            </header>
+
+            <!-- Metrics Overview Cards -->
+            <section class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon total">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect width="8" height="4" x="8" y="3" rx="1"/></svg>
+                    </div>
+                    <div class="metric-info">
+                        <span class="metric-label">Total Tasks</span>
+                        <h3 id="total-tasks-count">0</h3>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon completed">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                    </div>
+                    <div class="metric-info">
+                        <span class="metric-label">Completed</span>
+                        <h3 id="completed-tasks-count">0</h3>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon pending">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div class="metric-info">
+                        <span class="metric-label">In Progress</span>
+                        <h3 id="pending-tasks-count">0</h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progress Bar Section -->
+            <section class="progress-section">
+                <div class="progress-header">
+                    <span>Overall Progress</span>
+                    <span id="progress-percentage">0%</span>
+                </div>
+                <div class="progress-track">
+                    <div id="progress-bar-fill" class="progress-fill"></div>
+                </div>
+            </section>
+
+            <!-- Add Task & Filter Workspace -->
+            <div class="workspace-grid">
+                <!-- Add Task Form Card -->
+                <section class="card add-task-card">
+                    <h3>Add Study Task</h3>
+                    <form id="task-form">
+                        <div class="form-group">
+                            <label for="task-subject">Subject / Category</label>
+                            <input type="text" id="task-subject" placeholder="e.g., Mathematics, Computer Science" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="task-name">Task Name / Topic</label>
+                            <input type="text" id="task-name" placeholder="e.g., Chapter 4 Calculus Review" required autocomplete="off">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="task-priority">Priority</label>
+                                <select id="task-priority">
+                                    <option value="normal">Normal</option>
+                                    <option value="high">High</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="task-due">Due Date</label>
+                                <input type="date" id="task-due">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            Add Study Task
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Task List Section -->
+                <section class="card tasks-card">
+                    <div class="tasks-header">
+                        <h3>Your Tasks</h3>
+                        <div class="filter-tabs">
+                            <button class="filter-tab active" data-filter="all">All</button>
+                            <button class="filter-tab" data-filter="active">Active</button>
+                            <button class="filter-tab" data-filter="completed">Completed</button>
+                        </div>
+                    </div>
+
+                    <div class="search-bar-wrap">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" id="search-input" placeholder="Search tasks or subjects..." autocomplete="off">
+                    </div>
+
+                    <div id="tasks-container" class="tasks-container">
+                        <!-- Dynamic Tasks Rendered Here -->
+                    </div>
+
+                    <div id="empty-state" class="empty-state hidden">
+                        <div class="empty-icon">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                        </div>
+                        <h4>No study tasks found</h4>
+                        <p>Add your first study task using the form on the left to get started!</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
