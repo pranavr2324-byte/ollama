@@ -78,5 +78,7 @@ dependencies {
     // Image loading
     implementation(libs.coil.compose)
 
+    testImplementation(kotlin("test"))
+
     debugImplementation(libs.androidx.ui.tooling)
 }

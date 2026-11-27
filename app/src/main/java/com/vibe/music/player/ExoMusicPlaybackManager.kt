@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.RawResourceDataSource
@@ -74,6 +75,14 @@ class ExoMusicPlaybackManager(
                 } else {
                     stopProgressTracker()
                 }
+            }
+
+            override fun onPlayerError(error: PlaybackException) {
+                stopProgressTracker()
+                _playbackState.value = _playbackState.value.copy(
+                    isPlaying = false,
+                    isBuffering = false
+                )
             }
 
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {

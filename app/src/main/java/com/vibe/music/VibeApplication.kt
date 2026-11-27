@@ -1,6 +1,12 @@
 package com.vibe.music
 
 import android.app.Application
+import com.vibe.music.data.remote.RemoteAlbumRepository
+import com.vibe.music.data.remote.RemoteArtistRepository
+import com.vibe.music.data.remote.RemotePlaylistRepository
+import com.vibe.music.data.remote.RemoteSongRepository
+import com.vibe.music.data.remote.VibeApiClient
+import com.vibe.music.data.remote.VibeNetworkConfig
 import com.vibe.music.data.repository.AlbumRepository
 import com.vibe.music.data.repository.ArtistRepository
 import com.vibe.music.data.repository.MockAlbumRepository
@@ -29,10 +35,18 @@ class VibeApplication : Application() {
         super.onCreate()
         instance = this
 
-        val songRepo = MockSongRepository()
-        val albumRepo = MockAlbumRepository(songRepo)
-        val artistRepo = MockArtistRepository()
-        val playlistRepo = MockPlaylistRepository(songRepo)
+        VibeNetworkConfig.init(this)
+        val apiClient = VibeApiClient()
+
+        val mockSongRepo = MockSongRepository()
+        val mockAlbumRepo = MockAlbumRepository(mockSongRepo)
+        val mockArtistRepo = MockArtistRepository()
+        val mockPlaylistRepo = MockPlaylistRepository(mockSongRepo)
+
+        val songRepo = RemoteSongRepository(apiClient, mockSongRepo)
+        val albumRepo = RemoteAlbumRepository(apiClient, mockAlbumRepo)
+        val artistRepo = RemoteArtistRepository(apiClient, mockArtistRepo)
+        val playlistRepo = RemotePlaylistRepository(apiClient, mockPlaylistRepo)
 
         songRepository = songRepo
         albumRepository = albumRepo

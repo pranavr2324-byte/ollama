@@ -4,48 +4,49 @@
 
 ## ✅ Completed Tasks
 
-- [x] Inspect workspace environment (JDK 21, Android SDK API 34, Gradle availability confirmed).
-- [x] Remove obsolete legacy web files (`index.html`, `script.js`, `style.css`).
-- [x] Create comprehensive `/docs` documentation suite and root symlinks.
-- [x] Setup native Android Studio project structure with Gradle Kotlin DSL (`settings.gradle.kts`, `build.gradle.kts`, `gradle.properties`, `app/build.gradle.kts`).
-- [x] Configure AndroidManifest, permissions (Internet, Foreground Service, Notifications), launcher icons, and themes.
-- [x] Synthesize and bundle 5 royalty-free stereo WAV audio tracks into `res/raw/` for offline audio playback.
-- [x] Implement VIBE Design System (Colors, Typography, Shapes, Themes, GlassCard, AnimatedEqualizer, VibeGradientButton, SongListItem, AlbumCard, ArtistAvatarItem, PlaylistCard, SectionHeader).
-- [x] Define domain models (`Song`, `Album`, `Artist`, `Playlist`, `Genre`, `PlaybackState`, `RepeatMode`).
-- [x] Define clean repository interfaces (`SongRepository`, `AlbumRepository`, `ArtistRepository`, `PlaylistRepository`).
-- [x] Implement rich mock repositories with featured tracks, trending Tamil hits, albums, popular artists, and mood playlists.
-- [x] Implement `MusicPlaybackManager` and `ExoMusicPlaybackManager` wrapping AndroidX Media3 ExoPlayer with queue management, seek bar progress tracking, shuffle, repeat, and volume control.
-- [x] Implement ViewModels (`HomeViewModel`, `ExploreViewModel`, `SearchViewModel`, `LibraryViewModel`, `PlayerViewModel`, `AlbumDetailViewModel`, `ArtistDetailViewModel`, `PlaylistDetailViewModel`, `SettingsViewModel`).
-- [x] Build Home Screen (Personalized greeting, VIBE branding, Hero card, Trending Tamil songs, Recently Played, Recommended Albums, Popular Artists, Mood Playlists).
-- [x] Build Explore Screen (Search action bar, Category chips, New Releases carousel, Browse All Genres tiles, Trending Tracks, Curated Playlists).
-- [x] Build Search Screen (Reactive debounced search, Category filter chips, Search History chips with remove/clear all, Song/Album/Artist/Playlist results, Empty and Loading states).
-- [x] Build Music Library Screen (Tab navigation: Songs, Albums, Artists, Playlists, Favourites; Create Playlist dialog with in-memory persistence).
-- [x] Build Album Detail Screen (Artwork header, Play All, Shuffle, track listing).
-- [x] Build Artist Detail Screen (Hero portrait, listener count, bio, Play Popular, Shuffle, popular tracks).
-- [x] Build Playlist Detail Screen (Artwork header, description, song count, Play All, Shuffle, song list).
-- [x] Build Full-Screen Music Player (Vinyl spin animation, ambient glow, title/artist, favorite toggle, interactive scrubbable seek slider with elapsed/remaining times, shuffle, previous, play/pause, next, repeat mode cycling, interactive volume slider, queue sheet trigger).
-- [x] Build Persistent Mini Player (Bottom anchored across top destinations, thumbnail, title, artist, play/pause, next, micro progress bar, tap to expand).
-- [x] Build Live Playback Queue Modal (Current track with animated equalizer, reorder items up/down, remove items, clear queue, click to skip).
-- [x] Build Settings Screen (Audio streaming quality, download quality, theme preferences, gapless toggle, volume normalization, app info, user profile card).
-- [x] Build and verify debug APK (`./gradlew assembleDebug`).
+### Frontend Architecture & Audio Player
+- [x] Complete native Android Studio project with Jetpack Compose + Material 3.
+- [x] Audio engine wrapping AndroidX Media3 ExoPlayer with queue management, seek bar progress tracking, shuffle, repeat, and volume control.
+- [x] 11 Compose screens & interactive components (Home, Explore, Search, Library, Album, Artist, Playlist, Full Player, Mini Player, Live Queue, Settings).
+- [x] 5 synthesized royalty-free stereo WAV tracks bundled into `res/raw/` for offline fallback.
+- [x] Added `android:usesCleartextTraffic="true"` to `AndroidManifest.xml` for local LAN / emulator API testing.
+- [x] Implemented `onPlayerError` listener in `ExoMusicPlaybackManager.kt` to prevent infinite buffering on playback errors.
+- [x] Added Android unit test suite (`SongModelTest.kt`) passing via `./gradlew testDebugUnitTest`.
+- [x] Assembled and verified fresh debug APK (`app/build/outputs/apk/debug/app-debug.apk`, 32 MB).
+
+### Backend & Cloud Architecture
+- [x] Node.js + TypeScript + Express backend structure in `backend/`.
+- [x] Cloudinary audio storage service (`CloudinaryService.ts`) with HTTP range-streaming and asset cleanup.
+- [x] Production Supabase PostgreSQL schema with Prisma ORM (`prisma/schema.prisma`).
+- [x] Secure multipart music upload endpoint (`POST /api/v1/admin/songs/upload`) with rollback protection.
+- [x] Complete REST API catalog, streaming, search, playlists, favourites, recently played, and admin endpoints.
+- [x] Dual JWT & Supabase Authentication with RBAC and resource ownership checks.
+- [x] Administrator onboarding CLI script (`npm run create-admin <email> <password>`).
+- [x] Vitest automated test suite expanded to **39 tests passing across 6 test suites**.
+
+### Android Backend Integration
+- [x] Configurable network module (`VibeNetworkConfig.kt`) supporting emulator, local LAN, and production base URLs.
+- [x] OkHttp client (`VibeApiClient.kt`) with timeouts, auth header interceptor, and sanitized JSON parsers.
+- [x] Added `getRecentlyPlayed()` and `getPlaylistById(id)` to `VibeApiClient.kt` and wired into remote repositories.
+- [x] Remote repositories (`RemoteSongRepository`, `RemoteAlbumRepository`, `RemoteArtistRepository`, `RemotePlaylistRepository`) with resilient offline mock fallbacks.
+- [x] Integrated ExoPlayer direct streaming from Cloudinary URLs (`song.streamUrl != null`).
 
 ---
 
-## 🟡 In Progress Tasks
+## 🟡 Real-World Cloud Transition Checklist (In Progress)
 
-- None (Phase 1-5 Frontend milestone fully achieved).
-
----
-
-## ⏳ Pending Tasks (Post-Frontend / Cloud Backend Phase)
-
-- [ ] Connect repository interfaces to cloud streaming REST/GraphQL backend.
-- [ ] Implement Media3 `MediaSessionService` foreground notification service for background playback control.
-- [ ] Add Room local database for offline audio caching.
-- [ ] User authentication and cloud playlist synchronization.
-
----
-
-## 🐛 Known Issues / Limitations
-
-- Audio playback currently uses bundled royalty-free synthesized audio assets and local mock stores until the cloud music streaming backend is integrated.
+- [x] Inspect existing repository state, tests, and documentation.
+- [x] Protect `backend/.env` with `.gitignore` and generate cryptographically secure `JWT_SECRET`.
+- [x] Prepare `backend/.env` template with configuration guides.
+- [x] Add zero-leak environment validation script (`npm run check-env`).
+- [x] User provides Cloudinary account credentials (`CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`).
+- [x] User provides Supabase project credentials (`DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`).
+- [x] Verify environment variables without exposing secrets (`npm run check-env` & `cloudinary.api.ping()`).
+- [x] Update `DATABASE_URL` to Supabase Session Pooler (IPv4) and verify DB connection (`SELECT 1` succeeded, 0 existing tables in `public`).
+- [x] Obtain user approval and execute `npx prisma db push` (8 tables created in Supabase `public` schema).
+- [x] Run `npm run create-admin` to create `admin@vibe.music` (`ADMIN` role) with a unique generated password.
+- [x] Start backend server (`npm run dev`) and verify live endpoints (`/health` & `/api/v1/songs`).
+- [x] Upload first real song (`Putaapu Gang`, 6.2 MB MP3) via `POST /api/v1/admin/songs/upload`.
+- [x] Verify song in Cloudinary (`vibe/music/Putaapu-Gang-Song-SnapYT.App_1_mvlvid`) and Supabase database (`songs` & `artists`).
+- [x] Test HTTP range streaming URL (`206 Partial Content`, `audio/mpeg`, `Accept-Ranges: bytes`).
+- [x] Assemble fresh debug APK (`app/build/outputs/apk/debug/app-debug.apk`, 32 MB) and verify live playback of **Putaapu Gang** on user's physical Android phone.

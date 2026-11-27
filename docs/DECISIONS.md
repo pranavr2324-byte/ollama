@@ -33,3 +33,23 @@
 - **Context**: Linux containers in cloud dev environments (such as Codespaces) run with strict memory bounds without swap. Default Gradle daemon memory settings and D8 dex workers could cause OOM. Furthermore, NDK debug symbol stripping can fail when standalone NDK tools are not present.
 - **Decision**: Configure `org.gradle.jvmargs=-Xmx2560m -XX:+UseG1GC` with `org.gradle.workers.max=2`, and set `keepDebugSymbols += "**/*.so"` in `packaging.jniLibs`.
 - **Consequences**: Fast, stable builds that consistently produce valid APKs without crashing the Gradle daemon.
+
+### ADR-007: Cloudinary as Cloud Audio Storage & Range-Streaming Provider
+- **Context**: Large audio files should not be stored in PostgreSQL or proxy-streamed through the Node.js server memory, which would degrade throughput.
+- **Decision**: Use Cloudinary with dedicated `vibe/music/` folder and `video` resource type. Cloudinary provides global CDN delivery, HTTP `Range` request support for seeking in ExoPlayer, and signed delivery URLs when needed.
+- **Consequences**: High-speed audio delivery, zero server CPU overhead during streaming, and reliable seeking.
+
+### ADR-008: Supabase PostgreSQL with Prisma ORM for Catalog & Relational State
+- **Context**: The backend needs relational integrity for artists, albums, songs, user-created playlists with explicit ordering (`playlist_songs`), favourites, and recently played tracks.
+- **Decision**: Use PostgreSQL hosted via Supabase and managed via Prisma ORM (`backend/prisma/schema.prisma`).
+- **Consequences**: Type-safe queries, migration management, and foreign key cascade behaviors.
+
+### ADR-009: Hybrid Dual-Auth (JWT + Supabase Auth)
+- **Context**: The backend must support both local standalone development (bcrypt + JWT) and cloud Supabase authentication without requiring developers to sign up for external services just to run unit tests.
+- **Decision**: Implement dual authentication in `authController.ts` and `authMiddleware.ts` that automatically falls back to local JWT auth when Supabase credentials are absent.
+- **Consequences**: 100% testable in CI/CD without live cloud dependencies.
+
+### ADR-010: Android Remote Repository Layer with Resilient Offline Fallback
+- **Context**: If network is disconnected or backend is offline, the Android app should not show broken screens or crash.
+- **Decision**: Implement `RemoteSongRepository`, `RemoteAlbumRepository`, `RemoteArtistRepository`, and `RemotePlaylistRepository` wrapping `VibeApiClient` with automatic fallback to bundled mock stores.
+- **Consequences**: Uncompromised user experience, instant responsiveness, and zero breaking changes to existing ViewModels.

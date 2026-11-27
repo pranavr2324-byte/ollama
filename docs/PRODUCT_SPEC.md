@@ -2,72 +2,45 @@
 
 ---
 
-## 🎯 Vision & Scope
+## 🎯 1. Product Vision
 
-**VIBE** is a modern cloud-based music streaming frontend built natively for Android. The application delivers an uncompromising audio-centric experience, rejecting non-music clutter (no news feeds, social posts, or video streams).
+**VIBE** is a premium, nocturnal, distraction-free music streaming platform built for music purists. It combines an ultra-fast Jetpack Compose Android client with a robust Cloudinary-backed audio streaming backend and Supabase PostgreSQL metadata catalog.
 
 ---
 
-## 📱 Functional Screen Specifications
+## 🎧 2. Implemented Features
 
-### 1. Home Screen
-- **Personalized Greeting**: Dynamic morning/afternoon/evening header with user profile avatar.
-- **Featured Hero Card**: Highlighting top trending release with one-touch playback.
-- **Trending Tamil Music**: Curated carousel featuring top Tamil hits (Anirudh Ravichander, A.R. Rahman, Yuvan Shankar Raja, Santhosh Narayanan, Sid Sriram).
-- **Recently Played**: Quick horizontal scroll of recently listened tracks.
-- **Recommended Albums & Popular Artists**: Circular artist avatars and rectangular album cards.
-- **Mood Playlists**: "Late Night Chill", "High Octane Workout", "Deep Focus", "Acoustic Sunset".
+### Android Client
+- **Home Hub**: Featured releases, Trending Tamil hits, Recently Played, Recommended Albums, Popular Artists, Mood Playlists.
+- **Explore & Discovery**: Category chips, New Releases carousel, 8-tile genre grid with vibrant gradients, Curated Playlists.
+- **Reactive Search**: Debounced search across songs, albums, and artists, category filter chips (All, Songs, Albums, Artists, Playlists), search history chips with delete/clear.
+- **Music Library**: Tabbed navigation (Songs, Albums, Artists, Playlists, Favourites) and real-time custom playlist creation.
+- **Full Player**: Vinyl spin animation, ambient glow, scrubbable seek slider with elapsed/remaining times, Play/Pause, Next/Previous, Shuffle, Repeat 1/All, Favourite toggle, Queue bottom sheet trigger, interactive volume slider.
+- **Persistent Mini Player**: Anchored bottom player with thumbnail, title, artist, playback controls, and micro progress bar across all top destinations.
+- **Live Playback Queue**: Modal sheet, animated equalizer, track reordering, track removal, clear queue, and tap to skip.
+- **Settings Screen**: Streaming quality, download quality, theme preferences, gapless toggle, volume normalization, user profile card.
 
-### 2. Explore Screen
-- Quick category tags: "All", "Trending", "New Releases", "Tamil Hits", "Indie", "Hip Hop".
-- New Releases carousel with instant play buttons.
-- Dynamic Genre Grid with gradient cards (Synthwave, Tamil Indie, Lo-Fi, EDM, Pop, Rock, Classical).
-- Curated editor playlists and featured spotlight artists.
+### Backend & Cloud Storage
+- **Cloudinary Storage**: High-fidelity audio storage under `vibe/music/`, HTTP `Range` request delivery for seekable playback in ExoPlayer, signed delivery URLs, asset metadata, deletion.
+- **Supabase PostgreSQL Schema**: Prisma schema covering users, artists, albums, songs, ordered playlists (`playlist_songs`), favourites, and recently played.
+- **Authentication**: JWT token issuance and verification, Supabase Auth integration, RBAC (`USER` vs `ADMIN`).
+- **REST APIs**: Full CRUD for music catalog, search, streaming, playlists, favourites, recently played, and administrative uploads.
+- **Security & Reliability**: Zod validation, Helmet security headers, rate limiting, Multer streaming upload with temporary disk buffering and automatic rollback on failure.
 
-### 3. Search Screen
-- Reactive instant search input with clear button.
-- Filter chips: All, Songs, Albums, Artists, Playlists.
-- Search history with chip removal and "Clear All".
-- Rich result rows with artwork, metadata, and action buttons.
-- Intuitive empty states for zero results and initial search state.
+---
 
-### 4. Music Library Screen
-- Top tab navigation:
-  - **All Songs**: Complete list with duration, artist, and menu.
-  - **Albums**: Grid of album cards with track count and release year.
-  - **Artists**: Grid of artist circles with follower counts.
-  - **Playlists**: User playlists + "Create New Playlist" floating action.
-  - **Favourites**: Songs marked as favourite.
-  - **Recently Played**: History log of played tracks.
+## 📱 3. User Flows
 
-### 5. Detail Screens
-- **Album Screen**: Parallax artwork header, release year, track count, total duration, Play All, Shuffle, and track listing.
-- **Artist Screen**: Hero artist portrait, listener stats, top 5 popular tracks, albums discography, and play controls.
-- **Playlist Screen**: Custom playlist artwork, edit title, add/remove tracks dialog, play/shuffle controls.
-
-### 6. Full-Screen Audio Player
-- Expands seamlessly from mini player.
-- High-resolution artwork with subtle ambient glow and animated vinyl spin during playback.
-- Track title, artist name, and favourite heart toggle.
-- Interactive scrubbable progress bar with elapsed and remaining timestamps.
-- Playback controls: Shuffle toggle, Previous track, Play/Pause with pulsing effect, Next track, Repeat (Off / All / One) toggle.
-- Interactive volume slider.
-- Bottom sheet trigger for the live playback queue.
-
-### 7. Persistent Mini Player
-- Visible across all top-level tabs when audio is loaded.
-- Mini album thumbnail, song title, and artist marquee.
-- Inline Play/Pause toggle and Next track button.
-- Micro progress bar along the bottom edge.
-- Tap opens the full-screen player.
-
-### 8. Live Playback Queue
-- Displays currently playing track and upcoming queue.
-- Reorder items, remove individual tracks, clear queue.
-- Tap any queue item to skip immediately to that track.
-
-### 9. Settings Screen
-- Audio streaming quality (Normal 128kbps, High 256kbps, Lossless 320kbps).
-- Download quality options.
-- Visual theme preferences (Charcoal Black default, Obsidian Glow, Neon Cyber).
-- Equalizer preview, cache clearing, app version, and open-source licenses.
+1. **Browse & Stream**:
+   - User opens Home or Explore.
+   - User taps a track or "Play All" on an album.
+   - Remote repository resolves track with Cloudinary `streamUrl`.
+   - ExoPlayer streams audio with HTTP range seeking; mini player and full player reflect live state.
+2. **Search**:
+   - User types query in Search bar.
+   - Debounced API queries `/api/v1/search?q={query}`.
+   - Results display categorised songs, albums, and artists.
+3. **Playlists & Favourites**:
+   - User taps Heart icon: calls `POST/DELETE /api/v1/favourites/:songId`, updates in-memory and cloud state.
+   - User creates playlist: persists in Supabase via `/api/v1/playlists`.
+   - User reorders or adds songs to playlist: updates ordered `playlist_songs` positions.

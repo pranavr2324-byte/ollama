@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+.env.*
+!.env.example
+.admin-credentials.local
+*.log
+tests
+vitest.config.ts

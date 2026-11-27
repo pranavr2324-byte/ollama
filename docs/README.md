@@ -1,92 +1,75 @@
-# VIBE — Premium Native Android Music Application
+# VIBE — Premium Native Android Music Application & Cloud Backend
 
 <p align="center">
   <img src="../app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="VIBE Logo" width="120" height="120" onerror="this.style.display='none'"/>
 </p>
 
 <p align="center">
-  <b>Immersive, elegant, cloud-ready music streaming frontend built with modern Android Jetpack Compose & Media3 ExoPlayer.</b>
+  <b>Immersive, elegant, cloud-ready music streaming platform built with Android Jetpack Compose, Media3 ExoPlayer, Node.js TypeScript API, Cloudinary Music Storage, and Supabase PostgreSQL.</b>
 </p>
 
 ---
 
 ## 🎧 Overview
 
-**VIBE** is a modern cloud-ready music streaming Android frontend crafted with:
-- **Kotlin** & **Jetpack Compose** (Declarative UI)
-- **Material 3** with custom deep charcoal / neon gradient aesthetics
-- **AndroidX Media3 ExoPlayer** for seamless local & streaming audio playback
-- **MVVM Architecture** with unidirectional data flow (StateFlow & Coroutines)
-- **Navigation Compose** with smooth transitions
-- **Gradle Kotlin DSL** (`build.gradle.kts`)
-
-VIBE delivers a music-focused experience without social feeds, video bloat, or distracting non-music features.
+**VIBE** is a production-grade music streaming application consisting of:
+- **Android Native Client**: Kotlin, Jetpack Compose, Material 3, AndroidX Media3 ExoPlayer, MVVM with unidirectional data flow, OkHttp remote repository layer with offline fallback.
+- **Backend API**: Node.js, Express, TypeScript, Zod, JWT & Supabase Auth, Prisma ORM, Helmet security, rate limiting.
+- **Cloud Storage**: Cloudinary dedicated `vibe/music/` audio storage with HTTP `Range` request delivery for high-performance seeking in Media3 ExoPlayer.
+- **Database**: Supabase PostgreSQL with relational schema for artists, albums, songs, ordered playlists, favourites, and recently played tracks.
 
 ---
 
 ## 📱 Feature Highlights
 
-- **Home Screen**: Personalized greeting, featured tracks, Trending Tamil hits, Recently Played, Recommended Albums, Popular Artists, and Mood Playlists.
-- **Explore Screen**: Category badges, trending songs, new releases, genre grids, featured artists, and curated playlists.
-- **Search Screen**: Instant reactive search across songs, albums, and artists, search history management, and empty/loading states.
-- **Music Library**: Tabs for All Songs, Albums, Artists, Playlists, and Favourites.
-- **Album & Artist Screens**: Dynamic header artwork, track lists, quick play, shuffle, and add-to-playlist options.
-- **Custom Playlist Management**: Create playlists, edit titles, add/remove songs, and toggle favourites.
-- **Persistent Mini Player**: Bottom anchored with album art thumbnail, title, artist, play/pause, next track, and progress bar, tap to expand to full player.
-- **Full-Screen Audio Player**: High-res album art with animated vinyl/glow effect, interactive seek bar, playback controls (Play/Pause, Skip Next/Previous, Shuffle, Repeat 1/All, Favourite toggle, Queue quick sheet, Volume slider).
-- **Playback Queue**: Live reorderable/clearable queue, upcoming songs, direct track selection.
-- **Settings Screen**: Audio streaming & download quality preferences, dark aesthetic themes, equalizer shortcut, app info, and user profile view.
+- **Home Screen**: Personalized greeting, hero featured tracks, Trending Tamil hits, Recently Played, Recommended Albums, Popular Artists, and Mood Playlists.
+- **Explore Screen**: Category badges, trending tracks, new releases carousel, 8-tile genre grid, and curated playlists.
+- **Search Screen**: Reactive debounced search across songs, albums, and artists, filter chips, and search history chips.
+- **Music Library**: Tabs for Songs, Albums, Artists, Playlists, and Favourites, with real-time playlist creation and cloud sync.
+- **Full-Screen Audio Player**: High-res album art with animated vinyl effect and ambient glow, scrubbable seek slider with elapsed/remaining times, Play/Pause, Next/Previous, Shuffle, Repeat (Off/All/One), Favourite toggle, Queue trigger, Volume slider.
+- **Persistent Mini Player**: Anchored across all destinations with thumbnail, title, artist, playback controls, and micro progress bar.
+- **Live Playback Queue**: Modal bottom sheet, current track animated equalizer, reorder items up/down, remove item, clear queue, click to skip.
+- **Settings Screen**: Audio streaming & download quality preferences, dark aesthetic themes, volume normalization, and user profile card.
+- **Cloudinary Range Streaming**: Seamless seeking and buffering directly through Cloudinary CDN.
+- **Dual-Mode Offline Resilience**: Operates in cloud streaming mode when connected, seamlessly falls back to bundled synthesized raw audio when offline.
 
 ---
 
 ## 🛠️ Technology Stack
 
-| Layer | Technology |
+| Component | Technology |
 |---|---|
-| **Language** | Kotlin 2.0+ |
-| **UI Framework** | Jetpack Compose + Material 3 |
-| **Media Player** | AndroidX Media3 (ExoPlayer 1.4+) |
-| **Architecture** | MVVM + Clean Architecture Repositories |
-| **Async / Reactive** | Kotlin Coroutines + StateFlow / SharedFlow |
-| **Navigation** | Navigation Compose |
-| **Image Loading** | Coil Compose |
-| **Build System** | Gradle 8.x / Kotlin DSL (`build.gradle.kts`) |
-| **Target SDK** | Android 14 (API 34), Min SDK 26 (Android 8.0) |
-
----
-
-## 🏗️ Project Architecture
-
-```
-com.vibe.music
-├── data
-│   ├── model          # Song, Album, Artist, Playlist, Genre data classes
-│   └── repository     # Clean interfaces & MockRepository implementations
-├── player             # MusicPlaybackManager & Media3 ExoPlayer implementation
-├── ui
-│   ├── components     # Glassmorphic cards, TrackItem, MiniPlayer, GradientHeader
-│   ├── navigation     # Screen definitions, NavigationHost, BottomNavBar
-│   ├── screens        # Home, Explore, Search, Library, Album, Artist, Playlist, Player, Queue, Settings
-│   └── theme          # VibeColors, Typography, Shape, VibeTheme
-└── viewmodel          # HomeViewModel, PlayerViewModel, LibraryViewModel, etc.
-```
+| **Android Language & SDK** | Kotlin 2.0+, Target SDK 34 (Android 14), Min SDK 26 |
+| **Android UI Framework** | Jetpack Compose + Material 3 + Navigation Compose |
+| **Android Audio Engine** | AndroidX Media3 ExoPlayer 1.4+ |
+| **Android Networking** | OkHttp 4.12 with `VibeApiClient` |
+| **Backend Runtime** | Node.js 24+, TypeScript 5.6, Express 4.21 |
+| **Cloud Audio Storage** | Cloudinary (`vibe/music/`, video resource type, HTTP Range CDN) |
+| **Database & ORM** | Supabase PostgreSQL + Prisma 5.22 |
+| **Authentication** | JWT (HS256) + Supabase Auth |
+| **Testing** | Vitest 2.1 (22 automated tests) |
 
 ---
 
 ## 🚀 Building & Running
 
-### Prerequisites
-- JDK 17 or 21 (`JAVA_HOME` pointing to Java 17/21)
-- Android SDK (API 34 installed, `ANDROID_HOME` configured)
+### 1. Backend Setup & Run
+```bash
+cd backend
+npm install
+npm test
+npm run dev
+# Backend API listening on http://localhost:4000/api/v1
+```
 
-### Build Debug APK
+### 2. Android APK Build
 ```bash
 export ANDROID_HOME=/home/codespace/android-sdk
 export JAVA_HOME=/usr/local/sdkman/candidates/java/21.0.13.0+2-ms
 ./gradlew assembleDebug
 ```
-The resulting APK is generated at:
-`app/build/outputs/apk/debug/app-debug.apk`
+The resulting APK is verified at:
+`app/build/outputs/apk/debug/app-debug.apk` (32 MB)
 
 ---
 
@@ -95,10 +78,16 @@ The resulting APK is generated at:
 All detailed specifications and engineering documents are located in `/docs`:
 - [PROJECT_STATE.md](PROJECT_STATE.md) — Live implementation status and test results
 - [TASKS.md](TASKS.md) — Development task checklist
-- [PRODUCT_SPEC.md](PRODUCT_SPEC.md) — Complete product specifications & functional details
-- [UI_DESIGN_SYSTEM.md](UI_DESIGN_SYSTEM.md) — Design tokens, typography, glassmorphism, and color palette
-- [ARCHITECTURE.md](ARCHITECTURE.md) — Architecture diagrams and layer separation
-- [DECISIONS.md](DECISIONS.md) — Architecture and design decision log
-- [ROADMAP.md](ROADMAP.md) — Roadmap for backend integration and cloud streaming
 - [SESSION_HANDOFF.md](SESSION_HANDOFF.md) — Seamless handoff instructions for any AI coding agent
-- [AGENTS.md](AGENTS.md) — Guidelines for autonomous AI agents
+- [API_REFERENCE.md](API_REFERENCE.md) — Complete REST API reference and endpoints
+- [BACKEND_SETUP.md](BACKEND_SETUP.md) — Backend installation, environment configuration, and migration
+- [CLOUDINARY_SETUP.md](CLOUDINARY_SETUP.md) — Cloudinary cloud storage and streaming configuration
+- [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md) — Supabase PostgreSQL Prisma relational schema
+- [ANDROID_BACKEND_INTEGRATION.md](ANDROID_BACKEND_INTEGRATION.md) — Android remote repository and ExoPlayer streaming guide
+- [SECURITY.md](SECURITY.md) — Secrets management, authentication, RBAC, and input validation
+- [DEPLOYMENT.md](DEPLOYMENT.md) — Cloud backend and Android release deployment guide
+- [ARCHITECTURE.md](ARCHITECTURE.md) — End-to-end architecture diagrams and layer separation
+- [PRODUCT_SPEC.md](PRODUCT_SPEC.md) — Product specifications and functional requirements
+- [DECISIONS.md](DECISIONS.md) — Architecture decision records (ADRs)
+- [ROADMAP.md](ROADMAP.md) — Product roadmap and future enhancements
+- [AGENTS.md](AGENTS.md) — Mandatory guidelines for autonomous AI agents
