@@ -1,0 +1,6 @@
+<resources>
+    <color name="vibe_background">#0A0A0E</color>
+    <color name="vibe_surface">#14141B</color>
+    <color name="vibe_primary">#8B5CF6</color>
+    <color name="vibe_secondary">#06B6D4</color>
+</resources>
