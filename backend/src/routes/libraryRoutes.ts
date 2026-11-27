@@ -13,7 +13,7 @@ import {
   removeSongFromPlaylist,
   updatePlaylist,
 } from '../controllers/libraryController';
-import { optionalAuth, requireAuth } from '../middleware/authMiddleware';
+import { requireAuth } from '../middleware/authMiddleware';
 import { asyncHandler } from '../utils/asyncHandler';
 
 const router = Router();
@@ -23,7 +23,7 @@ const router = Router();
 // ==========================================
 router.get('/playlists', requireAuth, asyncHandler(listPlaylists));
 router.post('/playlists', requireAuth, asyncHandler(createPlaylist));
-router.get('/playlists/:id', optionalAuth, asyncHandler(getPlaylistById));
+router.get('/playlists/:id', requireAuth, asyncHandler(getPlaylistById));
 router.patch('/playlists/:id', requireAuth, asyncHandler(updatePlaylist));
 router.delete('/playlists/:id', requireAuth, asyncHandler(deletePlaylist));
 router.post('/playlists/:id/songs', requireAuth, asyncHandler(addSongToPlaylist));

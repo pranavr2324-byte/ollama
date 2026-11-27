@@ -254,6 +254,21 @@ fun PlayerScreen(
             }
         }
 
+        // Playback Error Banner
+        playbackState.errorMessage?.let { errorMsg ->
+            Text(
+                text = errorMsg,
+                color = VibeAccentPink,
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+            )
+        }
+
         // Seek Bar / Progress Slider
         Slider(
             value = currentFraction,

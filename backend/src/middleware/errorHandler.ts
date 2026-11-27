@@ -38,6 +38,17 @@ export function errorHandler(
     return;
   }
 
+  if (err instanceof SyntaxError && 'body' in err) {
+    res.status(400).json({
+      success: false,
+      error: {
+        code: 'INVALID_JSON',
+        message: 'Request body contains invalid JSON',
+      },
+    });
+    return;
+  }
+
   if (err instanceof MulterError) {
     const status = err.code === 'LIMIT_FILE_SIZE' ? 413 : 400;
     res.status(status).json({

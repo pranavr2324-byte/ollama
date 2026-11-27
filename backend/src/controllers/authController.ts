@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { Request, Response } from 'express';
 import { prisma } from '../config/prisma';
-import { getSupabaseClient } from '../config/supabase';
+import { getSupabaseAdminClient, getSupabaseClient } from '../config/supabase';
 import { signAuthToken } from '../middleware/authMiddleware';
 import { AppError } from '../utils/AppError';
 import { loginSchema, registerSchema } from '../validators/authValidator';
@@ -16,17 +16,31 @@ export async function register(req: Request, res: Response): Promise<void> {
   }
 
   let supabaseId: string | null = null;
-  const supabase = getSupabaseClient();
-  if (supabase) {
-    const { data, error } = await supabase.auth.signUp({
+  const supabaseAdmin = getSupabaseAdminClient();
+  if (supabaseAdmin) {
+    const { data, error } = await supabaseAdmin.auth.admin.createUser({
       email: normalizedEmail,
       password,
-      options: { data: { name } },
+      email_confirm: true,
+      user_metadata: { name },
     });
     if (error) {
       throw new AppError(error.message, 400, 'SUPABASE_REGISTER_FAILED');
     }
     supabaseId = data.user?.id ?? null;
+  } else {
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      const { data, error } = await supabase.auth.signUp({
+        email: normalizedEmail,
+        password,
+        options: { data: { name } },
+      });
+      if (error) {
+        throw new AppError(error.message, 400, 'SUPABASE_REGISTER_FAILED');
+      }
+      supabaseId = data.user?.id ?? null;
+    }
   }
 
   const passwordHash = await bcrypt.hash(password, 10);

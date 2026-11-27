@@ -14,7 +14,8 @@ data class PlaybackState(
     val repeatMode: RepeatMode = RepeatMode.OFF,
     val queue: List<Song> = emptyList(),
     val currentQueueIndex: Int = -1,
-    val volume: Float = 1.0f
+    val volume: Float = 1.0f,
+    val errorMessage: String? = null
 ) {
     val progress: Float
         get() = if (durationMs > 0) (currentPositionMs.toFloat() / durationMs.toFloat()).coerceIn(0f, 1f) else 0f

@@ -75,6 +75,9 @@ export async function listPlaylists(req: Request, res: Response): Promise<void> 
 export async function getPlaylistById(req: Request, res: Response): Promise<void> {
   const id = req.params.id as string;
   const userId = req.user?.id;
+  if (!userId) {
+    throw new AppError('Authentication required', 401, 'UNAUTHORIZED');
+  }
 
   const playlist = await prisma.playlist.findUnique({
     where: { id },
@@ -95,6 +98,10 @@ export async function getPlaylistById(req: Request, res: Response): Promise<void
 
   if (!playlist) {
     throw new AppError('Playlist not found', 404, 'PLAYLIST_NOT_FOUND');
+  }
+
+  if (playlist.userId !== userId && req.user?.role !== 'ADMIN') {
+    throw new AppError('You do not have permission to view this playlist', 403, 'FORBIDDEN');
   }
 
   // Check favourites for current user

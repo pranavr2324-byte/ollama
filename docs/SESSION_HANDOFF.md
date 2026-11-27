@@ -43,10 +43,11 @@ This document certifies that a complete audit was performed and the cloud setup 
 
 ## 📱 Testing on Android Device / Emulator
 
-1. Ensure the backend is running on port `4000` (`npm run dev` in `backend/`).
-2. If testing from a local machine against this Codespace, forward port `4000` (with Public or local port forwarding) or update `VibeNetworkConfig` if using a LAN/public URL.
-3. Install the fresh APK:
+1. Install the latest debug APK (`app/build/outputs/apk/debug/app-debug.apk`, 32 MB) on your Android phone:
    ```bash
    adb install -r app/build/outputs/apk/debug/app-debug.apk
    ```
-4. Open VIBE — **Putaapu Gang** will load from `/api/v1/songs` and stream directly from Cloudinary via Media3 ExoPlayer.
+2. **E2E QA Summary (2026-11-27)**:
+   - Backend TypeScript build (`tsc`) and all **42/42 Vitest tests** pass; live Render + Supabase + Cloudinary range streaming (`206 Partial Content`) verified.
+   - Fixed `GET /api/v1/playlists/:id` IDOR leak, `POST /api/v1/auth/register` Supabase email rate-limit issue, and added Android audio focus + playback error banner.
+   - **Pending before public release**: Deploy local backend fixes to Render, add Android Auth UI (login/register/logout), add `MediaSessionService` for lock-screen/notification controls, configure release signing, and run manual phone tests (UI navigation, rotation, background/lock-screen playback, Logcat inspection).

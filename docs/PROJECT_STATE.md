@@ -1,9 +1,9 @@
 # VIBE — Continuous Project State
 
 > **Last Updated:** 2026-11-27
-> **Current Phase:** Phase 9 — Production Deployment (Render)
-> **Backend Build Status:** ✅ SUCCESSFUL (`npm run build`, `npm test` — **39/39 tests passing across 6 suites**)
-> **Android Build Status:** ✅ SUCCESSFUL (`./gradlew assembleDebug`, `./gradlew testDebugUnitTest` passing)
+> **Current Phase:** Phase 10 — End-to-End QA & Release Validation
+> **Backend Build Status:** ✅ SUCCESSFUL (`npm run build`, `npm test` — **42/42 tests passing across 6 suites**)
+> **Android Build Status:** ✅ SUCCESSFUL (`./gradlew testDebugUnitTest lintDebug assembleDebug` passing)
 > **APK Artifact:** `app/build/outputs/apk/debug/app-debug.apk` (32 MB)
 
 ---
@@ -44,3 +44,8 @@
    - Added comprehensive test cases for missing files, missing artists, duplicate song detection, 404 handlers, playlist updates, playlist ownership guards, and playback tracking. Test count expanded from 22 to 39 passing tests.
 6. **Android Unit Testing Framework**:
    - Configured `testImplementation(kotlin("test"))` in `app/build.gradle.kts` and implemented `SongModelTest.kt`.
+7. **E2E QA Audit & Fixes (2026-11-27)**:
+   - **Fixed `GET /api/v1/playlists/:id` IDOR vulnerability**: Changed route from `optionalAuth` to `requireAuth` and enforced playlist ownership check (`playlist.userId !== userId && role !== 'ADMIN'`). Added 3 regression tests (`401`, `403`, `200`) in `backend/tests/library.test.ts` (42/42 Vitest tests passing).
+   - **Fixed `POST /api/v1/auth/register` Supabase email rate-limit failure**: Updated `authController.ts` to use `getSupabaseAdminClient().auth.admin.createUser({ email_confirm: true })` when service role key is present, avoiding Supabase's 2–4/hour email confirmation rate limit.
+   - **Added Android Audio Focus & Playback Error Reporting**: Configured `AudioAttributes` (`USAGE_MEDIA`, `AUDIO_CONTENT_TYPE_MUSIC`, `handleAudioFocus = true`) in `ExoMusicPlaybackManager.kt`, added `errorMessage` to `PlaybackState.kt`, and wired error banner display in `PlayerScreen.kt`.
+   - **Remaining gaps identified**: Android app lacks Login/Register/Logout UI (so `authToken` is never set on device and playlists/favourites/recently-played fall back to mocks), lacks `MediaSessionService` for lock-screen/notification controls, lacks Splash/Onboarding screens, release APK signing is not configured (`assembleRelease` OOM-killed in container), and local backend fixes (`errorHandler.ts`, `libraryController.ts`, `authController.ts`) need to be deployed to Render.

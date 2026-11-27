@@ -105,6 +105,48 @@ describe('Library API (/api/v1)', () => {
       expect(res.body.data.playlists[0].songCount).toBe(5);
     });
 
+    it('rejects unauthenticated GET /playlists/:id with 401', async () => {
+      const res = await request(app).get('/api/v1/playlists/pl-1');
+      expect(res.status).toBe(401);
+    });
+
+    it('rejects GET /playlists/:id when user is not owner', async () => {
+      (prisma.playlist.findUnique as any).mockResolvedValue({
+        id: 'pl-1',
+        userId: 'usr-123',
+        songs: [],
+      });
+
+      const res = await request(app)
+        .get('/api/v1/playlists/pl-1')
+        .set('Authorization', `Bearer ${otherUserToken}`);
+
+      expect(res.status).toBe(403);
+      expect(res.body.error.code).toBe('FORBIDDEN');
+    });
+
+    it('returns playlist details when user is owner', async () => {
+      (prisma.playlist.findUnique as any).mockResolvedValue({
+        id: 'pl-1',
+        userId: 'usr-123',
+        name: 'My Chill Mix',
+        description: null,
+        artworkUrl: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        songs: [],
+      });
+      (prisma.favourite.findMany as any).mockResolvedValue([]);
+
+      const res = await request(app)
+        .get('/api/v1/playlists/pl-1')
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.playlist.id).toBe('pl-1');
+    });
+
     it('updates playlist when user is owner', async () => {
       (prisma.playlist.findUnique as any).mockResolvedValue({
         id: 'pl-1',

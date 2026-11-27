@@ -42,6 +42,7 @@ class SongModelTest {
         assertEquals(RepeatMode.OFF, state.repeatMode)
         assertFalse(state.isShuffleEnabled)
         assertEquals(1.0f, state.volume, 0.001f)
+        assertEquals(null, state.errorMessage)
     }
 
     @Test

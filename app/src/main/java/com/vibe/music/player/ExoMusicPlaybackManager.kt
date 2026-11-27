@@ -3,6 +3,8 @@ package com.vibe.music.player
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.OptIn
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
@@ -31,7 +33,15 @@ class ExoMusicPlaybackManager(
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.Main + Job())
 ) : MusicPlaybackManager {
 
-    private val exoPlayer: ExoPlayer = ExoPlayer.Builder(context).build()
+    private val exoPlayer: ExoPlayer = ExoPlayer.Builder(context)
+        .setAudioAttributes(
+            AudioAttributes.Builder()
+                .setUsage(C.USAGE_MEDIA)
+                .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                .build(),
+            true
+        )
+        .build()
     private val _playbackState = MutableStateFlow(PlaybackState())
     override val playbackState: StateFlow<PlaybackState> = _playbackState.asStateFlow()
 
@@ -81,7 +91,8 @@ class ExoMusicPlaybackManager(
                 stopProgressTracker()
                 _playbackState.value = _playbackState.value.copy(
                     isPlaying = false,
-                    isBuffering = false
+                    isBuffering = false,
+                    errorMessage = error.localizedMessage ?: "Playback failed"
                 )
             }
 
@@ -168,7 +179,8 @@ class ExoMusicPlaybackManager(
             currentQueueIndex = startIndex,
             durationMs = currentSong?.durationMs ?: 0L,
             currentPositionMs = 0L,
-            isPlaying = true
+            isPlaying = true,
+            errorMessage = null
         )
     }
 
@@ -179,7 +191,7 @@ class ExoMusicPlaybackManager(
 
     override fun resume() {
         exoPlayer.play()
-        _playbackState.value = _playbackState.value.copy(isPlaying = true)
+        _playbackState.value = _playbackState.value.copy(isPlaying = true, errorMessage = null)
     }
 
     override fun playPause() {
