@@ -4,6 +4,7 @@ import com.vibe.music.data.model.Album
 import com.vibe.music.data.model.Artist
 import com.vibe.music.data.model.Playlist
 import com.vibe.music.data.model.Song
+import com.vibe.music.viewmodel.AuthUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
@@ -70,6 +71,65 @@ class VibeApiClient(
 
         JSONObject(bodyString)
     }
+
+    // ==========================================
+    // AUTHENTICATION
+    // ==========================================
+
+    suspend fun login(email: String, password: String): NetworkResult<AuthUser> = runCatching {
+        val payload = JSONObject().apply {
+            put("email", email)
+            put("password", password)
+        }
+        val root = executeCall(buildRequest("auth/login", "POST", payload.toString()))
+        val data = root.getJSONObject("data")
+        val token = data.getString("token")
+        VibeNetworkConfig.authToken = token
+        parseAuthUser(data.getJSONObject("user"))
+    }.fold(
+        onSuccess = { NetworkResult.Success(it) },
+        onFailure = { NetworkResult.Error(it.message ?: "Login failed", cause = it) }
+    )
+
+    suspend fun register(name: String, email: String, password: String): NetworkResult<AuthUser> = runCatching {
+        val payload = JSONObject().apply {
+            put("name", name)
+            put("email", email)
+            put("password", password)
+        }
+        val root = executeCall(buildRequest("auth/register", "POST", payload.toString()))
+        val data = root.getJSONObject("data")
+        val token = data.getString("token")
+        VibeNetworkConfig.authToken = token
+        parseAuthUser(data.getJSONObject("user"))
+    }.fold(
+        onSuccess = { NetworkResult.Success(it) },
+        onFailure = { NetworkResult.Error(it.message ?: "Registration failed", cause = it) }
+    )
+
+    suspend fun logout(): NetworkResult<Unit> = runCatching {
+        executeCall(buildRequest("auth/logout", "POST"))
+        Unit
+    }.fold(
+        onSuccess = { NetworkResult.Success(it) },
+        onFailure = { NetworkResult.Error(it.message ?: "Logout failed", cause = it) }
+    )
+
+    suspend fun getMe(): NetworkResult<AuthUser> = runCatching {
+        val root = executeCall(buildRequest("auth/me"))
+        val data = root.getJSONObject("data")
+        parseAuthUser(data.getJSONObject("user"))
+    }.fold(
+        onSuccess = { NetworkResult.Success(it) },
+        onFailure = { NetworkResult.Error(it.message ?: "Failed to get user", cause = it) }
+    )
+
+    private fun parseAuthUser(obj: JSONObject) = AuthUser(
+        id = obj.getString("id"),
+        email = obj.getString("email"),
+        name = obj.optString("name", obj.optString("email", "User")),
+        role = obj.optString("role", "USER")
+    )
 
     // ==========================================
     // SONGS & STREAMING

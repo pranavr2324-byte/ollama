@@ -35,5 +35,9 @@ sealed class Screen(
         fun playlistRoute(playlistId: String) = "playlist/$playlistId"
 
         const val SETTINGS_ROUTE = "settings"
+
+        // Auth routes (no bottom nav, before main app shell)
+        const val LOGIN_ROUTE = "login"
+        const val REGISTER_ROUTE = "register"
     }
 }

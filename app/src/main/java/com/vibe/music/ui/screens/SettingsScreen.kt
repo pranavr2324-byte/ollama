@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vibe.music.ui.components.GlassCard
 import com.vibe.music.ui.theme.PrimaryGradient
+import com.vibe.music.ui.theme.VibeAccentPink
 import com.vibe.music.ui.theme.VibePrimary
 import com.vibe.music.ui.theme.VibeSecondary
 import com.vibe.music.ui.theme.VibeSurfaceElevated
@@ -61,6 +62,7 @@ import com.vibe.music.viewmodel.VibeThemeMode
 fun SettingsScreen(
     viewModel: SettingsViewModel,
     onBack: () -> Unit,
+    onLogout: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val streamingQuality by viewModel.streamingQuality.collectAsState()
@@ -233,6 +235,26 @@ fun SettingsScreen(
             Text("VIBE for Android", color = VibeTextPrimary, fontSize = 14.sp, fontWeight = FontWeight.Bold)
             Text("Version 1.0.0 • Native Compose Edition", color = VibeTextSecondary, fontSize = 12.sp)
             Text("Powered by AndroidX Media3 ExoPlayer", color = VibeTextMuted, fontSize = 11.sp, modifier = Modifier.padding(top = 2.dp))
+        }
+
+        Spacer(modifier = Modifier.height(14.dp))
+
+        // Sign Out
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 4.dp)
+        ) {
+            androidx.compose.material3.OutlinedButton(
+                onClick = onLogout,
+                modifier = Modifier.fillMaxWidth(),
+                colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                    contentColor = VibeAccentPink
+                ),
+                border = androidx.compose.foundation.BorderStroke(1.dp, VibeAccentPink)
+            ) {
+                Text("Sign Out", fontWeight = FontWeight.SemiBold)
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))

@@ -12,11 +12,14 @@ import com.vibe.music.ui.screens.ArtistScreen
 import com.vibe.music.ui.screens.ExploreScreen
 import com.vibe.music.ui.screens.HomeScreen
 import com.vibe.music.ui.screens.LibraryScreen
+import com.vibe.music.ui.screens.LoginScreen
 import com.vibe.music.ui.screens.PlaylistScreen
+import com.vibe.music.ui.screens.RegisterScreen
 import com.vibe.music.ui.screens.SearchScreen
 import com.vibe.music.ui.screens.SettingsScreen
 import com.vibe.music.viewmodel.AlbumDetailViewModel
 import com.vibe.music.viewmodel.ArtistDetailViewModel
+import com.vibe.music.viewmodel.AuthViewModel
 import com.vibe.music.viewmodel.ExploreViewModel
 import com.vibe.music.viewmodel.HomeViewModel
 import com.vibe.music.viewmodel.LibraryViewModel
@@ -28,6 +31,7 @@ import com.vibe.music.viewmodel.SettingsViewModel
 @Composable
 fun VibeNavGraph(
     navController: NavHostController,
+    authViewModel: AuthViewModel,
     homeViewModel: HomeViewModel,
     exploreViewModel: ExploreViewModel,
     searchViewModel: SearchViewModel,
@@ -37,13 +41,32 @@ fun VibeNavGraph(
     artistViewModel: ArtistDetailViewModel,
     playlistViewModel: PlaylistDetailViewModel,
     settingsViewModel: SettingsViewModel,
+    startDestination: String,
     modifier: Modifier = Modifier
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route,
+        startDestination = startDestination,
         modifier = modifier
     ) {
+        composable(Screen.LOGIN_ROUTE) {
+            LoginScreen(
+                authViewModel = authViewModel,
+                onNavigateRegister = {
+                    navController.navigate(Screen.REGISTER_ROUTE) {
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+
+        composable(Screen.REGISTER_ROUTE) {
+            RegisterScreen(
+                authViewModel = authViewModel,
+                onNavigateLogin = { navController.popBackStack() }
+            )
+        }
+
         composable(Screen.Home.route) {
             HomeScreen(
                 homeViewModel = homeViewModel,
@@ -129,7 +152,10 @@ fun VibeNavGraph(
         composable(Screen.SETTINGS_ROUTE) {
             SettingsScreen(
                 viewModel = settingsViewModel,
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onLogout = {
+                    authViewModel.logout()
+                }
             )
         }
     }

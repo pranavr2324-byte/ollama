@@ -63,8 +63,8 @@
 - [x] Fixed `POST /api/v1/auth/register` Supabase email rate-limit blocker (`authController.ts` using `admin.createUser`).
 - [x] Added Media3 `AudioAttributes` (`handleAudioFocus = true`) and `PlaybackState.errorMessage` banner (`ExoMusicPlaybackManager.kt`, `PlaybackState.kt`, `PlayerScreen.kt`).
 - [x] Verified `testDebugUnitTest`, `lintDebug`, and `assembleDebug` passing (`app/build/outputs/apk/debug/app-debug.apk`, 32 MB).
-- [ ] Deploy updated backend fixes (`errorHandler.ts`, `libraryRoutes.ts`, `libraryController.ts`, `authController.ts`) to Render.
-- [ ] Implement Android Login/Register/Logout UI + `VibeApiClient` auth methods so user playlists/favourites/recently-played sync to cloud.
-- [ ] Implement `MediaSessionService` in `AndroidManifest.xml` for lock-screen, notification controls, and background playback.
+- [x] Deploy updated backend fixes (`errorHandler.ts`, `libraryRoutes.ts`, `libraryController.ts`, `authController.ts`) to Render.
+- [x] Implement Android Login/Register/Logout UI + `VibeApiClient` auth methods so user playlists/favourites/recently-played sync to cloud.
+- [x] Implement `MediaSessionService` in `AndroidManifest.xml` for lock-screen, notification controls, and background playback.
 - [ ] Configure release signing and restrict `usesCleartextTraffic` to debug builds only before public release.
 - [ ] Run physical device UI, rotation, backgrounding, and Logcat tests on user's Android phone (`adb devices` had no attached device in Codespace).

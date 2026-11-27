@@ -1,5 +1,6 @@
 package com.vibe.music.player
 
+import android.content.ComponentName
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.OptIn
@@ -12,6 +13,9 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.RawResourceDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
+import com.google.common.util.concurrent.ListenableFuture
 import com.vibe.music.data.model.PlaybackState
 import com.vibe.music.data.model.RepeatMode
 import com.vibe.music.data.model.Song
@@ -41,14 +45,19 @@ class ExoMusicPlaybackManager(
                 .build(),
             true
         )
+        .setHandleAudioBecomingNoisy(true)
         .build()
+        .also { VibePlayerRegistry.player = it }
     private val _playbackState = MutableStateFlow(PlaybackState())
     override val playbackState: StateFlow<PlaybackState> = _playbackState.asStateFlow()
 
     private var progressJob: Job? = null
     private var internalQueue: MutableList<Song> = mutableListOf()
+    private var controllerFuture: ListenableFuture<MediaController>? = null
 
     init {
+        val sessionToken = SessionToken(context, ComponentName(context, VibeMusicService::class.java))
+        controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
         exoPlayer.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
                 val isBuffering = playbackState == Player.STATE_BUFFERING
@@ -291,6 +300,11 @@ class ExoMusicPlaybackManager(
 
     override fun release() {
         stopProgressTracker()
+        controllerFuture?.let { MediaController.releaseFuture(it) }
+        controllerFuture = null
+        if (VibePlayerRegistry.player === exoPlayer) {
+            VibePlayerRegistry.player = null
+        }
         exoPlayer.release()
     }
 }

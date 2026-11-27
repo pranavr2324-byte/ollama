@@ -48,6 +48,8 @@ This document certifies that a complete audit was performed and the cloud setup 
    adb install -r app/build/outputs/apk/debug/app-debug.apk
    ```
 2. **E2E QA Summary (2026-11-27)**:
-   - Backend TypeScript build (`tsc`) and all **42/42 Vitest tests** pass; live Render + Supabase + Cloudinary range streaming (`206 Partial Content`) verified.
+   - Backend TypeScript build (`tsc`) and all **42/42 Vitest tests** pass; live Render + Supabase + Cloudinary range streaming (`206 Partial Content`) verified (including live registration & login).
    - Fixed `GET /api/v1/playlists/:id` IDOR leak, `POST /api/v1/auth/register` Supabase email rate-limit issue, and added Android audio focus + playback error banner.
-   - **Pending before public release**: Deploy local backend fixes to Render, add Android Auth UI (login/register/logout), add `MediaSessionService` for lock-screen/notification controls, configure release signing, and run manual phone tests (UI navigation, rotation, background/lock-screen playback, Logcat inspection).
+   - Implemented Android Auth UI (`LoginScreen.kt`, `RegisterScreen.kt`, `AuthViewModel.kt`, `VibeApiClient` auth endpoints, `SettingsScreen` logout) and `VibeMusicService.kt` (`MediaSessionService` + `MediaController` binding in `ExoMusicPlaybackManager.kt`).
+   - Verified `./gradlew testDebugUnitTest lintDebug assembleDebug` passing.
+   - **Pending before public release**: Configure release signing (and restrict `usesCleartextTraffic` to debug builds only) and run manual phone tests (UI navigation, auth flow, rotation, background/lock-screen playback, Logcat inspection).
