@@ -50,3 +50,6 @@
 - [x] Verify song in Cloudinary (`vibe/music/Putaapu-Gang-Song-SnapYT.App_1_mvlvid`) and Supabase database (`songs` & `artists`).
 - [x] Test HTTP range streaming URL (`206 Partial Content`, `audio/mpeg`, `Accept-Ranges: bytes`).
 - [x] Assemble fresh debug APK (`app/build/outputs/apk/debug/app-debug.apk`, 32 MB) and verify live playback of **Putaapu Gang** on user's physical Android phone.
+- [x] Deploy backend to Render production (`https://vibe-backend-qeil.onrender.com`) — health check and song API verified.
+- [x] Update `VibeNetworkConfig.kt` `DEFAULT_PUBLIC_URL` to production Render URL.
+- [x] Rebuild debug APK pointing to production backend.

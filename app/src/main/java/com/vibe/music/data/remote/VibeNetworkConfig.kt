@@ -12,7 +12,7 @@ object VibeNetworkConfig {
     // Default: 10.0.2.2 connects to host localhost from Android emulator
     const val DEFAULT_EMULATOR_URL = "http://10.0.2.2:4000/api/v1/"
     const val DEFAULT_LOCAL_URL = "http://127.0.0.1:4000/api/v1/"
-    const val DEFAULT_PUBLIC_URL = "https://fuzzy-engine-qvxwgw44pj9q3g44-4000.app.github.dev/api/v1/"
+    const val DEFAULT_PUBLIC_URL = "https://vibe-backend-qeil.onrender.com/api/v1/"
 
     private var prefs: SharedPreferences? = null
 

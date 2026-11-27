@@ -37,6 +37,7 @@ This document certifies that a complete audit was performed and the cloud setup 
    - **Bug Fix**: Updated `SAFE_PUBLIC_ID_REGEX` in `backend/src/services/cloudinaryService.ts` to allow single dots `.` in Cloudinary public IDs (while blocking `..`), and isolated `tests/auth.test.ts` from live Supabase Auth.
    - **End-to-End Phone Playback**: ✅ Verified by user on physical Android phone (`app-debug.apk` installed and **Putaapu Gang** playing live from Cloudinary).
    - **Deployment Manifests**: Added `render.yaml`, `backend/Dockerfile`, and `backend/.dockerignore` for 24/7 cloud hosting.
+   - **Production Deployment**: ✅ Backend deployed to Render at `https://vibe-backend-qeil.onrender.com`. Health check (`/health`) returns `ok`; song API (`/api/v1/songs`) returns live data. Android APK rebuilt to point to production URL.
 
 ---
 
